@@ -5,7 +5,7 @@
 version comments
     sound wave with lifetime and radius, opacity
     basic speaker with emitted sound waves
-    coloring
+    coloring, moving speaker
 
  */
 let font
@@ -32,17 +32,22 @@ function draw() {
     // soundWave.update()
     speaker.show()
     speaker.update()
+    // what is our speaker going to be at next frame?
+    let x = width/2 + 20 * cos(frameCount/5)
+    let y = height/2 + 20 * sin(frameCount/5)
+    speaker.pos = new p5.Vector(x, y)
 }
 
 class SoundWave {
-    constructor(x, y) {
+    constructor(x, y, c) {
         this.pos = new p5.Vector(x, y)
         this.lifetime = 100
+        this.c = c // our color
     }
 
     show() {
         noFill()
-        stroke(0, 0, 100, this.lifetime)
+        stroke(hue(this.c), saturation(this.c), brightness(this.c), this.lifetime)
         circle(this.pos.x, this.pos.y, (100-this.lifetime)*width/75)
     }
 
@@ -59,7 +64,8 @@ class Speaker {
     }
 
     show() {
-        fill(0, 0, 100)
+        let c = color((frameCount)%360, 100, 100)
+        fill(c)
         noStroke()
         circle(this.pos.x, this.pos.y, 10)
 
@@ -70,11 +76,9 @@ class Speaker {
     }
 
     update() {
-
-        if (frameCount % 20 === 0) {
-            // we always want to append a sound wave at our position
-            this.soundwaves.push(new SoundWave(this.pos.x, this.pos.y))
-        }
+        // we always want to append a sound wave at our position
+        let c = color((frameCount)%360, 100, 100)
+        this.soundwaves.push(new SoundWave(this.pos.x, this.pos.y, c))
 
         // let's update our sound waves!
         for (let wave of this.soundwaves) {
