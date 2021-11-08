@@ -9,7 +9,8 @@ version comments
 
  */
 let font
-let soundWave
+// let soundWave
+let speaker
 
 function preload() {
     font = loadFont('data/Meiryo-01.ttf')
@@ -18,7 +19,8 @@ function preload() {
 function setup() {
     createCanvas(640, 360)
     colorMode(HSB, 360, 100, 100, 100)
-    soundWave = new SoundWave(random(width), random(height))
+    // soundWave = new SoundWave(random(width), random(height))
+    speaker = new Speaker(width/2, height/2)
 }
 
 function draw() {
@@ -26,8 +28,10 @@ function draw() {
     
     background(234, 34, 24)
 
-    soundWave.show()
-    soundWave.update()
+    // soundWave.show()
+    // soundWave.update()
+    speaker.show()
+    speaker.update()
 }
 
 class SoundWave {
@@ -46,3 +50,37 @@ class SoundWave {
         this.lifetime -= 1
     }
 }
+
+
+class Speaker {
+    constructor(x, y) {
+        this.pos = new p5.Vector(x, y)
+        this.soundwaves = []
+    }
+
+    show() {
+        fill(0, 0, 100)
+        noStroke()
+        circle(this.pos.x, this.pos.y, 10)
+
+        // let's show our sound waves!
+        for (let wave of this.soundwaves) {
+            wave.show()
+        }
+    }
+
+    update() {
+
+        if (frameCount % 20 === 0) {
+            // we always want to append a sound wave at our position
+            this.soundwaves.push(new SoundWave(this.pos.x, this.pos.y))
+        }
+
+        // let's update our sound waves!
+        for (let wave of this.soundwaves) {
+            wave.update()
+        }
+    }
+}
+
+
